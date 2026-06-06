@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Check Availability &amp; Book — Confetti &amp; Co.</title>
+
+<!-- ============================================================
+     THIS IS YOUR BOOKING PAGE.
+     To go live, find the box marked  ⬇ PASTE EMBED CODE HERE ⬇
+     and replace the placeholder with the embed code from EITHER:
+
+     • MICROSOFT BOOKINGS (if you have Microsoft 365):
+       Open the Bookings app → pick your booking calendar →
+       "Booking page" tab → Publish/Embed → copy the <iframe> code.
+       It looks like:
+       <iframe src="https://outlook.office365.com/owa/calendar/YOURNAME@yourdomain/bookings/" ...></iframe>
+       Bookings two-way syncs with your Outlook calendar automatically.
+
+     • RENTAL SOFTWARE (Booqable, Rentopian, InflatableOffice, SuperSaaS…):
+       In the tool's dashboard, find "Embed / Widget / Add to website"
+       and copy the snippet they give you (an <iframe> or a <script>).
+       Many of these can also sync to your Outlook calendar in settings.
+
+     Until you paste real code, the placeholder below is shown,
+     plus the simple "Request a date" form still works.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --ivory:#FCF6EC;--ivory-2:#F6ECD9;--ink:#241710;--ink-soft:#6B5440;
+    --coral:#FF4D2E;--coral-deep:#D9330F;--pink:#E63E73;--teal:#11A294;--gold:#E0A52B;
+    --line:rgba(36,23,16,.14);--shadow:0 22px 48px -22px rgba(36,23,16,.5);
+    --shadow-sm:0 10px 24px -14px rgba(36,23,16,.45);--r:20px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Hanken Grotesk',sans-serif;background:var(--ivory);color:var(--ink);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Fraunces',serif;line-height:1.04;font-weight:600}
+  a{color:inherit;text-decoration:none}
+  .wrap{width:min(1180px,92vw);margin-inline:auto}
+  .btn{display:inline-flex;align-items:center;gap:.55rem;font-weight:700;padding:.95rem 1.7rem;border-radius:100px;border:2px solid var(--ink);cursor:pointer;transition:transform .18s,box-shadow .18s,background .18s;background:var(--ink);color:var(--ivory)}
+  .btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
+  .btn.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--ivory)}
+
+  header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--ivory) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+  .brand{font-family:'Fraunces',serif;font-weight:900;font-size:1.45rem;display:flex;align-items:center;gap:.5rem}
+  .brand .dot{width:13px;height:13px;border-radius:50%;background:var(--coral);box-shadow:6px -6px 0 -2px var(--teal),12px 4px 0 -3px var(--gold)}
+  .menu{display:flex;align-items:center;gap:1.9rem;font-weight:600;font-size:.97rem}
+  .menu a:not(.btn)::after{content:"";display:block;height:2px;width:0;background:var(--coral);transition:width .22s}
+  .menu a:not(.btn):hover::after{width:100%}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:.4rem}
+  .burger span{width:26px;height:2.5px;background:var(--ink);border-radius:2px}
+
+  /* hero */
+  .b-hero{padding:clamp(2.6rem,6vw,4.5rem) 0 clamp(1.5rem,3vw,2.5rem);text-align:center;position:relative;overflow:hidden}
+  .eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:.74rem;color:var(--coral-deep);margin-bottom:1rem}
+  .b-hero h1{font-size:clamp(2.6rem,6vw,4.4rem);letter-spacing:-.015em}
+  .b-hero h1 em{font-style:italic;color:var(--coral)}
+  .b-hero p{color:var(--ink-soft);font-size:1.1rem;max-width:34rem;margin:1.1rem auto 0}
+  .confetti{position:absolute;inset:0;pointer-events:none}
+  .confetti i{position:absolute;animation:fall linear infinite}
+  @keyframes fall{0%{transform:translateY(-12vh) rotate(0)}100%{transform:translateY(60vh) rotate(540deg)}}
+
+  /* embed slot */
+  .embed-wrap{width:min(1000px,92vw);margin:1rem auto 0;padding-bottom:clamp(3rem,6vw,5rem)}
+  .embed-shell{background:#fff;border:1.5px solid var(--line);border-radius:24px;box-shadow:var(--shadow);overflow:hidden}
+  .embed-bar{display:flex;align-items:center;gap:.5rem;padding:.85rem 1.2rem;border-bottom:1.5px solid var(--line);background:var(--ivory-2)}
+  .embed-bar .d{width:11px;height:11px;border-radius:50%}
+  .embed-bar b{font-family:'Fraunces',serif;font-weight:700;margin-left:.5rem}
+  /* The placeholder shown until you paste your real embed code */
+  .placeholder{min-height:520px;display:grid;place-items:center;text-align:center;padding:2.5rem 1.5rem;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,77,46,.08), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(17,162,148,.08), transparent 40%),
+      repeating-linear-gradient(45deg,transparent,transparent 22px,rgba(36,23,16,.03) 22px,rgba(36,23,16,.03) 44px)}
+  .placeholder .ic{font-size:3rem;margin-bottom:1rem}
+  .placeholder h3{font-size:1.6rem;margin-bottom:.6rem}
+  .placeholder p{color:var(--ink-soft);max-width:30rem;margin:0 auto .4rem}
+  .placeholder code{background:var(--ivory-2);border:1px solid var(--line);border-radius:6px;padding:.1rem .4rem;font-size:.85rem}
+
+  /* steps strip */
+  .pad{padding:clamp(3rem,6vw,5rem) 0}
+  .bg-2{background:var(--ivory-2)}
+  .head{max-width:42rem;margin:0 auto 2.6rem;text-align:center}
+  .head .tag{font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--teal)}
+  .head h2{font-size:clamp(1.9rem,4vw,2.9rem);margin-top:.5rem}
+  .bsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem;counter-reset:s}
+  .bstep{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.6rem}
+  .bstep::before{counter-increment:s;content:counter(s);font-family:'Fraunces',serif;font-weight:900;width:40px;height:40px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-size:1.2rem;margin-bottom:.9rem}
+  .bstep h3{font-size:1.15rem;margin-bottom:.3rem}
+  .bstep p{color:var(--ink-soft);font-size:.93rem}
+
+  /* faq */
+  .faq{max-width:760px;margin-inline:auto}
+  details{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:1rem 1.3rem;margin-bottom:.8rem}
+  details summary{font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  details summary::-webkit-details-marker{display:none}
+  details summary::after{content:"+";font-size:1.5rem;color:var(--coral);transition:.2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{color:var(--ink-soft);margin-top:.7rem}
+
+  /* fallback request form */
+  .req{display:grid;grid-template-columns:.85fr 1.15fr;gap:3rem;align-items:start}
+  .req-info h2{font-size:clamp(1.8rem,3.5vw,2.6rem);margin-bottom:.8rem}
+  .req-info p{color:var(--ink-soft);max-width:24rem}
+  form{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.9rem;box-shadow:var(--shadow-sm)}
+  .field{margin-bottom:1.05rem}
+  .field label{display:block;font-weight:600;font-size:.86rem;margin-bottom:.4rem}
+  .field input,.field select,.field textarea{width:100%;padding:.8rem .95rem;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-size:1rem;background:var(--ivory);color:var(--ink)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(255,77,46,.15)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .ok{display:none;background:rgba(17,162,148,.12);border:1.5px solid var(--teal);color:#0b6f65;padding:.9rem 1rem;border-radius:12px;font-weight:600;margin-bottom:1rem}
+  .form-note{font-size:.82rem;color:var(--ink-soft);margin-top:.6rem}
+
+  footer{background:var(--ink);color:var(--ivory);padding:3rem 0 1.6rem;margin-top:1rem}
+  .foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;align-items:center}
+  footer .brand{color:var(--ivory)}
+  footer a:hover{color:var(--coral)}
+  .copyright{color:#9d8a79;font-size:.82rem;margin-top:1.6rem;border-top:1px solid rgba(255,255,255,.14);padding-top:1.2rem}
+
+  @media(max-width:920px){.bsteps{grid-template-columns:1fr 1fr}.req{grid-template-columns:1fr}}
+  @media(max-width:600px){
+    .menu{position:fixed;inset:62px 0 auto 0;flex-direction:column;background:var(--ivory);padding:1.4rem;gap:1.1rem;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .3s}
+    .menu.open{transform:none}.burger{display:flex}
+    .bsteps,.grid2{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="dot"></span>Confetti&nbsp;&amp;&nbsp;Co.</a>
+    <nav class="menu" id="menu">
+      <a href="index.html#rentals">Rentals</a>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#gallery">Gallery</a>
+      <a class="btn ghost" href="index.html#quote">Get a quote</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ===================== BOOKING HERO ===================== -->
+<section class="b-hero">
+  <div class="confetti" id="confetti"></div>
+  <div class="wrap">
+    <span class="eyebrow">Live availability</span>
+    <h1>Check a date &amp; <em>book your party.</em></h1>
+    <p>Pick your event date below to see what's available, then reserve in a few clicks. Your booking syncs straight to our calendar.</p>
+  </div>
+</section>
+
+<!-- ===================== EMBED SLOT ===================== -->
+<div class="embed-wrap">
+  <div class="embed-shell">
+    <div class="embed-bar">
+      <span class="d" style="background:#FF5F57"></span><span class="d" style="background:#FEBC2E"></span><span class="d" style="background:#28C840"></span>
+      <b>Availability &amp; Booking</b>
+    </div>
+
+    <!-- ⬇⬇⬇ PASTE EMBED CODE HERE ⬇⬇⬇ -->
+    <!-- Delete this entire .placeholder div and paste your Microsoft Bookings
+         or rental-software <iframe>/<script> embed code in its place.
+         Tip: give the iframe  width="100%"  height="800"  style="border:0" -->
+    <div class="placeholder">
+      <div>
+        <div class="ic">🗓️</div>
+        <h3>Your live booking calendar goes here</h3>
+        <p>This is where customers will see real-time availability and reserve their date.</p>
+        <p>To activate it, paste your embed code from <b>Microsoft Bookings</b> or your <b>rental software</b> in place of this box. (See the instructions at the top of this file, near <code>PASTE EMBED CODE HERE</code>.)</p>
+      </div>
+    </div>
+    <!-- ⬆⬆⬆ PASTE EMBED CODE HERE ⬆⬆⬆ -->
+
+  </div>
+</div>
+
+<!-- ===================== BOOKING STEPS ===================== -->
+<section class="pad bg-2">
+  <div class="wrap">
+    <div class="head"><span class="tag">What to expect</span><h2>Booking in four easy steps.</h2></div>
+    <div class="bsteps">
+      <div class="bstep"><h3>Choose your date</h3><p>Open dates are shown in the calendar above — pick the one that fits.</p></div>
+      <div class="bstep"><h3>Select your items</h3><p>Add the rentals and headcount you need to your reservation.</p></div>
+      <div class="bstep"><h3>Confirm details</h3><p>Add the delivery address and any setup notes, then submit.</p></div>
+      <div class="bstep"><h3>You're booked!</h3><p>You'll get a confirmation, and your date is locked into our calendar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FALLBACK REQUEST FORM ===================== -->
+<section class="pad" id="request">
+  <div class="wrap req">
+    <div class="req-info">
+      <h2>Prefer we check for you?</h2>
+      <p>Send us your date and we'll confirm availability and hold it for you within one business day. No deposit needed to ask.</p>
+    </div>
+    <form id="reqForm" action="https://formspree.io/f/your-form-id" method="POST">
+      <div class="ok" id="okMsg">🎉 Your request is ready — finish sending in your email app and we'll confirm your date shortly.</div>
+      <div class="grid2">
+        <div class="field"><label>Your name</label><input name="name" required placeholder="Jane Doe"></div>
+        <div class="field"><label>Phone</label><input name="phone" type="tel" placeholder="(555) 000-0000"></div>
+      </div>
+      <div class="grid2">
+        <div class="field"><label>Email</label><input name="email" type="email" required placeholder="you@email.com"></div>
+        <div class="field"><label>Requested date</label><input name="date" type="date" required></div>
+      </div>
+      <div class="field"><label>What do you need?</label><textarea name="items" rows="3" placeholder="e.g. 1 bounce house, 6 round tables, 48 chairs, 1 canopy"></textarea></div>
+      <button class="btn coral" type="submit" style="width:100%;justify-content:center">Check my date</button>
+      <p class="form-note">We'll never share your details. Availability confirmed before any payment.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <a class="brand" href="index.html"><span class="dot"></span>Confetti&nbsp;&amp;&nbsp;Co.</a>
+      <div style="display:flex;gap:1.4rem;font-weight:600">
+        <a href="tel:+15551234567">(555) 123-4567</a>
+        <a href="mailto:hello@confettiandco.com">hello@confettiandco.com</a>
+      </div>
+    </div>
+    <div class="copyright">© <span id="yr"></span> Confetti &amp; Co. — Serving the Tri-County area.</div>
+  </div>
+</footer>
+
+<script>
+  const CONTACT_EMAIL = "hello@confettiandco.com"; /* EDIT: your email */
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  const burger=document.getElementById('burger'),menu=document.getElementById('menu');
+  burger.addEventListener('click',()=>menu.classList.toggle('open'));
+
+  const cc=document.getElementById('confetti'),colors=['#FF4D2E','#E63E73','#11A294','#E0A52B','#FFD15C'];
+  for(let i=0;i<16;i++){const s=document.createElement('i');
+    s.style.left=Math.random()*100+'%';s.style.background=colors[i%colors.length];
+    s.style.width=s.style.height=(8+Math.random()*8)+'px';
+    s.style.borderRadius=Math.random()>.5?'50%':'2px';
+    s.style.animationDuration=(6+Math.random()*6)+'s';s.style.animationDelay=(-Math.random()*8)+'s';
+    cc.appendChild(s);}
+
+  const form=document.getElementById('reqForm');
+  form.addEventListener('submit',function(e){
+    if(form.action.includes('your-form-id')){
+      e.preventDefault();
+      const d=new FormData(form);
+      const body=`Name: ${d.get('name')||''}%0D%0APhone: ${d.get('phone')||''}%0D%0AEmail: ${d.get('email')||''}%0D%0ARequested date: ${d.get('date')||''}%0D%0AItems: ${d.get('items')||''}`;
+      document.getElementById('okMsg').style.display='block';
+      window.location.href=`mailto:${CONTACT_EMAIL}?subject=Date request from ${d.get('name')||'website'}&body=${body}`;
+    }
+  });
+</script>
+</body>
+</html>

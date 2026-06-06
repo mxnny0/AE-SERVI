@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Confetti &amp; Co. — Party Rentals</title>
+
+<!-- ============================================================
+     QUICK-EDIT GUIDE  (everything you'll likely change is here)
+     1. Business name: search "Confetti & Co." and replace everywhere.
+     2. Phone / email / area: search "EDIT:" comments below.
+     3. Colors & fonts: see the :root block at the top of <style>.
+     4. Rental items: see the "RENTALS" section.
+     The booking calendar lives on the separate page: booking.html
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---------- DESIGN TOKENS — edit colors here ---------- */
+  :root{
+    --ivory:#FCF6EC;
+    --ivory-2:#F6ECD9;
+    --ink:#241710;
+    --ink-soft:#6B5440;
+    --coral:#FF4D2E;
+    --coral-deep:#D9330F;
+    --pink:#E63E73;
+    --teal:#11A294;
+    --gold:#E0A52B;
+    --line:rgba(36,23,16,.14);
+    --shadow:0 22px 48px -22px rgba(36,23,16,.5);
+    --shadow-sm:0 10px 24px -14px rgba(36,23,16,.45);
+    --r:20px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Hanken Grotesk',sans-serif;
+    background:var(--ivory);
+    color:var(--ink);
+    line-height:1.6;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{font-family:'Fraunces',serif;line-height:1.02;font-weight:600}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{width:min(1180px,92vw);margin-inline:auto}
+  section{position:relative}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.55rem;
+    font-weight:700;font-size:1rem;letter-spacing:.01em;
+    padding:.95rem 1.7rem;border-radius:100px;border:2px solid var(--ink);
+    cursor:pointer;transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    background:var(--ink);color:var(--ivory);
+  }
+  .btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-sm)}
+  .btn.coral{background:var(--coral);border-color:var(--coral);color:#fff}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:var(--ivory)}
+
+  /* ---------- HEADER ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb,var(--ivory) 86%,transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:.9rem 0}
+  .brand{font-family:'Fraunces',serif;font-weight:900;font-size:1.45rem;letter-spacing:-.01em;display:flex;align-items:center;gap:.5rem}
+  .brand .dot{width:13px;height:13px;border-radius:50%;background:var(--coral);box-shadow:6px -6px 0 -2px var(--teal),12px 4px 0 -3px var(--gold)}
+  .menu{display:flex;align-items:center;gap:1.9rem;font-weight:600;font-size:.97rem}
+  .menu a:not(.btn){position:relative}
+  .menu a:not(.btn)::after{content:"";position:absolute;left:0;bottom:-5px;height:2px;width:0;background:var(--coral);transition:width .22s ease}
+  .menu a:not(.btn):hover::after{width:100%}
+  .burger{display:none;flex-direction:column;gap:5px;background:none;border:0;cursor:pointer;padding:.4rem}
+  .burger span{width:26px;height:2.5px;background:var(--ink);border-radius:2px;transition:.25s}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:clamp(3rem,8vw,6.5rem) 0 clamp(3.5rem,7vw,6rem);overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:3rem;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.18em;font-size:.74rem;color:var(--coral-deep);margin-bottom:1.3rem}
+  .eyebrow::before{content:"";width:34px;height:2px;background:var(--coral)}
+  .hero h1{font-size:clamp(2.9rem,7vw,5.4rem);font-weight:600;letter-spacing:-.015em}
+  .hero h1 em{font-style:italic;color:var(--coral)}
+  .hero p.lede{font-size:clamp(1.05rem,1.4vw,1.22rem);color:var(--ink-soft);max-width:30rem;margin:1.5rem 0 2.2rem}
+  .hero-cta{display:flex;gap:.9rem;flex-wrap:wrap}
+  .hero-stats{display:flex;gap:2.2rem;margin-top:2.6rem;flex-wrap:wrap}
+  .hero-stats b{font-family:'Fraunces',serif;font-size:1.8rem;display:block;line-height:1}
+  .hero-stats span{font-size:.82rem;color:var(--ink-soft);font-weight:600}
+
+  /* hero art / confetti card */
+  .hero-art{position:relative;aspect-ratio:1/1.05;border-radius:28px;
+    background:
+      radial-gradient(120% 120% at 80% 10%, #FFE0B0 0%, transparent 55%),
+      linear-gradient(150deg,var(--coral),var(--pink) 70%);
+    box-shadow:var(--shadow);overflow:hidden;display:grid;place-items:center}
+  .hero-art .big{font-family:'Fraunces',serif;font-weight:900;font-size:clamp(4rem,12vw,8rem);color:#fff;text-align:center;line-height:.86;mix-blend-mode:soft-light;opacity:.95}
+  .balloon{position:absolute;border-radius:50% 50% 48% 52%;filter:saturate(1.1)}
+
+  /* floating confetti */
+  .confetti{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
+  .confetti i{position:absolute;width:13px;height:13px;opacity:.9;animation:fall linear infinite}
+  @keyframes fall{0%{transform:translateY(-12vh) rotate(0)}100%{transform:translateY(112vh) rotate(540deg)}}
+
+  /* ---------- SECTION HEADINGS ---------- */
+  .head{max-width:42rem;margin-bottom:3rem}
+  .head .tag{font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:.74rem;color:var(--teal)}
+  .head h2{font-size:clamp(2.1rem,4.5vw,3.3rem);margin:.6rem 0 .8rem;letter-spacing:-.01em}
+  .head p{color:var(--ink-soft);font-size:1.08rem}
+
+  .pad{padding:clamp(3.5rem,7vw,6rem) 0}
+  .bg-2{background:var(--ivory-2)}
+
+  /* ---------- RENTALS GRID ---------- */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+  .card{background:var(--ivory);border:1.5px solid var(--line);border-radius:var(--r);padding:1.8rem;transition:transform .2s ease,box-shadow .2s ease,border-color .2s;position:relative;overflow:hidden}
+  .bg-2 .card{background:#fff}
+  .card:hover{transform:translateY(-6px);box-shadow:var(--shadow);border-color:transparent}
+  .card .ic{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.7rem;margin-bottom:1.1rem;background:#fff;border:1.5px solid var(--line)}
+  .card h3{font-size:1.32rem;margin-bottom:.45rem;font-weight:600}
+  .card p{color:var(--ink-soft);font-size:.96rem}
+  .card .ribbon{position:absolute;inset:auto -30px -30px auto;width:90px;height:90px;border-radius:50%;opacity:.14}
+
+  /* ---------- STEPS ---------- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem;counter-reset:s}
+  .step{position:relative;padding-top:1rem}
+  .step::before{counter-increment:s;content:"0" counter(s);font-family:'Fraunces',serif;font-weight:900;font-size:2.6rem;color:var(--coral);opacity:.9;display:block;margin-bottom:.4rem}
+  .step h3{font-size:1.2rem;margin-bottom:.35rem}
+  .step p{color:var(--ink-soft);font-size:.95rem}
+
+  /* ---------- WHY ---------- */
+  .why{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem}
+  .why div{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.5rem}
+  .why .e{font-size:1.6rem}
+  .why b{display:block;font-family:'Fraunces',serif;font-size:1.12rem;margin:.5rem 0 .25rem}
+  .why span{color:var(--ink-soft);font-size:.9rem}
+
+  /* ---------- GALLERY ---------- */
+  .gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:170px;gap:1rem}
+  .gal figure{border-radius:16px;overflow:hidden;position:relative;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.85rem;text-align:center;padding:1rem}
+  .gal figure span{position:relative;z-index:2;opacity:.92;text-shadow:0 1px 8px rgba(0,0,0,.25)}
+  .gal .tall{grid-row:span 2}
+  .gal .wide{grid-column:span 2}
+
+  /* ---------- TESTIMONIALS ---------- */
+  .quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+  .quote{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.8rem;position:relative}
+  .quote .stars{color:var(--gold);letter-spacing:2px;margin-bottom:.7rem}
+  .quote p{font-size:1.02rem;font-style:italic;color:var(--ink)}
+  .quote b{display:block;margin-top:1.1rem;font-style:normal;font-weight:700}
+  .quote span{color:var(--ink-soft);font-size:.86rem}
+
+  /* ---------- CONTACT / QUOTE FORM ---------- */
+  .contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:3rem;align-items:start}
+  .contact-info h2{font-size:clamp(2rem,4vw,3rem);margin-bottom:1rem}
+  .contact-info p{color:var(--ink-soft);margin-bottom:1.8rem;max-width:26rem}
+  .ci-row{display:flex;align-items:center;gap:.9rem;margin-bottom:1rem;font-weight:600}
+  .ci-row .e{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:#fff;border:1.5px solid var(--line);font-size:1.1rem}
+  form{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:1.9rem;box-shadow:var(--shadow-sm)}
+  .field{margin-bottom:1.05rem}
+  .field label{display:block;font-weight:600;font-size:.86rem;margin-bottom:.4rem}
+  .field input,.field select,.field textarea{
+    width:100%;padding:.8rem .95rem;border:1.5px solid var(--line);border-radius:12px;
+    font-family:inherit;font-size:1rem;background:var(--ivory);color:var(--ink);transition:border-color .18s,box-shadow .18s}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--coral);box-shadow:0 0 0 3px rgba(255,77,46,.15)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .form-note{font-size:.82rem;color:var(--ink-soft);margin-top:.6rem}
+  .ok{display:none;background:rgba(17,162,148,.12);border:1.5px solid var(--teal);color:#0b6f65;padding:.9rem 1rem;border-radius:12px;font-weight:600;margin-bottom:1rem}
+
+  /* ---------- FOOTER ---------- */
+  footer{background:var(--ink);color:var(--ivory);padding:3.5rem 0 2rem;margin-top:1rem}
+  .foot{display:grid;grid-template-columns:2fr 1fr 1fr;gap:2rem}
+  footer .brand{color:var(--ivory)}
+  footer p{color:#cbb9a8;font-size:.95rem;margin-top:.8rem;max-width:24rem}
+  footer h4{font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:.9rem}
+  footer ul{list-style:none}
+  footer li{margin-bottom:.5rem;color:#cbb9a8;font-size:.93rem}
+  footer a:hover{color:var(--coral)}
+  .copyright{border-top:1px solid rgba(255,255,255,.14);margin-top:2.5rem;padding-top:1.4rem;color:#9d8a79;font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+
+  /* ---------- REVEAL ANIMATION ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media(max-width:920px){
+    .hero .wrap{grid-template-columns:1fr;gap:2.4rem}
+    .hero-art{max-width:420px;order:-1}
+    .cards,.steps,.why,.quotes{grid-template-columns:1fr 1fr}
+    .gal{grid-template-columns:1fr 1fr}
+    .contact{grid-template-columns:1fr}
+    .foot{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:600px){
+    .menu{position:fixed;inset:62px 0 auto 0;flex-direction:column;background:var(--ivory);padding:1.4rem;gap:1.1rem;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .3s ease}
+    .menu.open{transform:none}
+    .burger{display:flex}
+    .cards,.steps,.why,.quotes,.foot{grid-template-columns:1fr}
+    .grid2{grid-template-columns:1fr}
+    .hero-stats{gap:1.4rem}
+  }
+  .hero h1 span.line{display:block;opacity:0;transform:translateY(20px);animation:rise .8s forwards}
+  .hero h1 span.line:nth-child(1){animation-delay:.05s}
+  .hero h1 span.line:nth-child(2){animation-delay:.2s}
+  .hero .lede,.hero .eyebrow,.hero-cta,.hero-stats{opacity:0;animation:rise .8s forwards}
+  .hero .eyebrow{animation-delay:.0s}.hero .lede{animation-delay:.35s}.hero-cta{animation-delay:.5s}.hero-stats{animation-delay:.65s}
+  @keyframes rise{to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ===================== HEADER ===================== -->
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="index.html"><span class="dot"></span>Confetti&nbsp;&amp;&nbsp;Co.</a>
+    <nav class="menu" id="menu">
+      <a href="#rentals">Rentals</a>
+      <a href="#how">How it works</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#reviews">Reviews</a>
+      <a class="btn coral" href="booking.html">Check Availability</a>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="confetti" id="confetti"></div>
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Party rentals &amp; event hire</span>
+      <h1><span class="line">Make every</span><span class="line">celebration <em>unforgettable.</em></span></h1>
+      <p class="lede">From bounce houses to elegant tablescapes, we deliver, set up, and pack down — so you get to enjoy the party. Serving <!-- EDIT: your area -->the Tri-County area.</p>
+      <div class="hero-cta">
+        <a class="btn coral" href="booking.html">Check availability →</a>
+        <a class="btn ghost" href="#quote">Get a free quote</a>
+      </div>
+      <div class="hero-stats">
+        <div><b>500+</b><span>Events celebrated</span></div>
+        <div><b>4.9★</b><span>Average rating</span></div>
+        <div><b>24h</b><span>Quote turnaround</span></div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <div class="big">LET'S<br>PARTY</div>
+      <span class="balloon" style="width:70px;height:84px;background:#FFD15C;top:14%;left:12%;box-shadow:var(--shadow-sm)"></span>
+      <span class="balloon" style="width:54px;height:64px;background:var(--teal);bottom:16%;right:14%"></span>
+      <span class="balloon" style="width:40px;height:48px;background:#fff;top:22%;right:18%;opacity:.85"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RENTALS ===================== -->
+<section class="pad bg-2" id="rentals">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">What we rent</span>
+      <h2>Everything your event needs, in one place.</h2>
+      <p>Mix and match across categories — we'll help you build the perfect package for your headcount and theme.</p>
+    </div>
+    <!-- EDIT: add/remove cards to match your inventory -->
+    <div class="cards">
+      <div class="card reveal"><div class="ic">🎪</div><span class="ribbon" style="background:var(--coral)"></span><h3>Tents &amp; Canopies</h3><p>Frame tents, pole tents, and pop-up canopies for sun, rain, or shine.</p></div>
+      <div class="card reveal"><div class="ic">🪑</div><span class="ribbon" style="background:var(--teal)"></span><h3>Tables &amp; Seating</h3><p>Round, banquet, and cocktail tables with chairs to match any layout.</p></div>
+      <div class="card reveal"><div class="ic">🎈</div><span class="ribbon" style="background:var(--pink)"></span><h3>Bounce Houses</h3><p>Clean, safety-checked inflatables and combos that keep kids grinning.</p></div>
+      <div class="card reveal"><div class="ic">🍽️</div><span class="ribbon" style="background:var(--gold)"></span><h3>Tableware &amp; Linens</h3><p>Plates, glassware, flatware, and pressed linens in your colors.</p></div>
+      <div class="card reveal"><div class="ic">💡</div><span class="ribbon" style="background:var(--coral)"></span><h3>Lighting &amp; Decor</h3><p>String lights, uplighting, arches, and centerpieces to set the mood.</p></div>
+      <div class="card reveal"><div class="ic">🍿</div><span class="ribbon" style="background:var(--teal)"></span><h3>Party Extras</h3><p>Popcorn &amp; cotton-candy machines, dance floors, and PA systems.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="pad" id="how">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Simple &amp; stress-free</span>
+      <h2>How it works.</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><h3>Pick your date</h3><p>Check live availability and choose your event date on our booking page.</p></div>
+      <div class="step reveal"><h3>Build your order</h3><p>Tell us your items and headcount. We'll send a clear, itemized quote.</p></div>
+      <div class="step reveal"><h3>We deliver &amp; set up</h3><p>Our crew arrives on time, sets everything up, and double-checks safety.</p></div>
+      <div class="step reveal"><h3>You celebrate</h3><p>Enjoy the day. When it's over, we handle the pack-down and pickup.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY US ===================== -->
+<section class="pad bg-2">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Why families &amp; planners choose us</span>
+      <h2>Reliable, spotless, on time.</h2>
+    </div>
+    <div class="why">
+      <div class="reveal"><div class="e">🚚</div><b>On-time delivery</b><span>Tracked delivery windows, every time.</span></div>
+      <div class="reveal"><div class="e">🧼</div><b>Sanitized gear</b><span>Every item cleaned and inspected before it ships.</span></div>
+      <div class="reveal"><div class="e">🛡️</div><b>Fully insured</b><span>Licensed and insured for total peace of mind.</span></div>
+      <div class="reveal"><div class="e">💬</div><b>Real humans</b><span>Talk to a local team that actually picks up the phone.</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GALLERY ===================== -->
+<section class="pad" id="gallery">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Recent celebrations</span>
+      <h2>A peek at the parties.</h2>
+      <p>Swap these placeholders for your own event photos — just replace the background of each tile.</p>
+    </div>
+    <!-- EDIT: replace each figure's "background" with: url('your-photo.jpg') center/cover -->
+    <div class="gal">
+      <figure class="tall" style="background:linear-gradient(160deg,#FF4D2E,#E63E73)"><span>Backyard birthday</span></figure>
+      <figure class="wide" style="background:linear-gradient(160deg,#11A294,#0c7d72)"><span>Garden wedding</span></figure>
+      <figure style="background:linear-gradient(160deg,#E0A52B,#c2861a)"><span>Corporate gala</span></figure>
+      <figure style="background:linear-gradient(160deg,#E63E73,#b32a57)"><span>Kids' carnival</span></figure>
+      <figure class="wide" style="background:linear-gradient(160deg,#241710,#4a3322)"><span>Evening reception</span></figure>
+      <figure style="background:linear-gradient(160deg,#FF7A2E,#FF4D2E)"><span>Block party</span></figure>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TESTIMONIALS ===================== -->
+<section class="pad bg-2" id="reviews">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="tag">Kind words</span>
+      <h2>Loved by hosts everywhere.</h2>
+    </div>
+    <!-- EDIT: replace with your real reviews -->
+    <div class="quotes">
+      <div class="quote reveal"><div class="stars">★★★★★</div><p>"Setup was flawless and the bounce house was spotless. The kids never wanted to leave!"</p><b>Maria L.</b><span>Birthday party</span></div>
+      <div class="quote reveal"><div class="stars">★★★★★</div><p>"They handled our 150-guest wedding tent and linens without a hitch. True professionals."</p><b>James &amp; Priya</b><span>Garden wedding</span></div>
+      <div class="quote reveal"><div class="stars">★★★★★</div><p>"Quote in a day, delivery on time, and the friendliest crew. Booking again next year."</p><b>Dana R.</b><span>Company picnic</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT / QUOTE ===================== -->
+<section class="pad" id="quote">
+  <div class="wrap contact">
+    <div class="contact-info reveal">
+      <h2>Let's plan your party.</h2>
+      <p>Tell us a little about your event and we'll get back to you within one business day with a free, itemized quote.</p>
+      <!-- EDIT: your real contact details -->
+      <div class="ci-row"><span class="e">📞</span><a href="tel:+15551234567">(555) 123-4567</a></div>
+      <div class="ci-row"><span class="e">✉️</span><a href="mailto:hello@confettiandco.com">hello@confettiandco.com</a></div>
+      <div class="ci-row"><span class="e">📍</span><span>Serving the Tri-County area</span></div>
+      <div class="ci-row"><span class="e">🗓️</span><a href="booking.html">Check live availability →</a></div>
+    </div>
+
+    <form id="quoteForm" action="https://formspree.io/f/your-form-id" method="POST">
+      <!-- HOW TO RECEIVE THESE MESSAGES (pick one):
+           A) EASIEST (no setup): leave action as-is. The form opens the
+              visitor's email app pre-filled to your address. Set your
+              address in the script at the bottom (CONTACT_EMAIL).
+           B) SMOOTHER: create a free form at formspree.io, then replace
+              "your-form-id" above with your real Formspree ID and delete
+              the e.preventDefault() line in the script. -->
+      <div class="ok" id="okMsg">🎉 Thanks! Your request is ready to send — finish in your email app, or we'll be in touch shortly.</div>
+      <div class="grid2">
+        <div class="field"><label>Your name</label><input name="name" required placeholder="Jane Doe"></div>
+        <div class="field"><label>Phone</label><input name="phone" type="tel" placeholder="(555) 000-0000"></div>
+      </div>
+      <div class="field"><label>Email</label><input name="email" type="email" required placeholder="you@email.com"></div>
+      <div class="grid2">
+        <div class="field"><label>Event date</label><input name="date" type="date"></div>
+        <div class="field"><label>Event type</label>
+          <select name="type">
+            <option value="">Choose…</option>
+            <option>Birthday party</option><option>Wedding</option>
+            <option>Corporate / company event</option><option>Graduation</option>
+            <option>Festival / block party</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>What are you interested in?</label><textarea name="items" rows="3" placeholder="e.g. 1 bounce house, 8 round tables, 60 chairs, string lights"></textarea></div>
+      <button class="btn coral" type="submit" style="width:100%;justify-content:center">Request my free quote</button>
+      <p class="form-note">No deposit required to get a quote. We'll confirm availability before anything is booked.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a class="brand" href="index.html"><span class="dot"></span>Confetti&nbsp;&amp;&nbsp;Co.</a>
+      <p>Locally owned party &amp; event rentals. We bring the fun, set it up, and clean it up — so you can be a guest at your own party.</p>
+    </div>
+    <div>
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="#rentals">Rentals</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="booking.html">Book now</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Get in touch</h4>
+      <ul>
+        <li><a href="tel:+15551234567">(555) 123-4567</a></li>
+        <li><a href="mailto:hello@confettiandco.com">hello@confettiandco.com</a></li>
+        <li>Mon–Sat · 8am–7pm</li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap copyright">
+    <span>© <span id="yr"></span> Confetti &amp; Co. All rights reserved.</span>
+    <span>Made with 🎈 for unforgettable days.</span>
+  </div>
+</footer>
+
+<script>
+  /* ===== EDIT: where quote emails should go (option A) ===== */
+  const CONTACT_EMAIL = "hello@confettiandco.com";
+
+  // year
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // mobile menu
+  const burger=document.getElementById('burger'), menu=document.getElementById('menu');
+  burger.addEventListener('click',()=>menu.classList.toggle('open'));
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.classList.remove('open')));
+
+  // confetti generator
+  const cc=document.getElementById('confetti'), colors=['#FF4D2E','#E63E73','#11A294','#E0A52B','#FFD15C'];
+  for(let i=0;i<22;i++){const s=document.createElement('i');
+    s.style.left=Math.random()*100+'%';
+    s.style.background=colors[i%colors.length];
+    s.style.animationDuration=(6+Math.random()*7)+'s';
+    s.style.animationDelay=(-Math.random()*8)+'s';
+    s.style.borderRadius=Math.random()>.5?'50%':'2px';
+    s.style.width=s.style.height=(8+Math.random()*8)+'px';
+    cc.appendChild(s);}
+
+  // scroll reveal
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}}),{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // quote form — option A (mailto) fallback so it works with zero setup
+  const form=document.getElementById('quoteForm');
+  form.addEventListener('submit',function(e){
+    if(form.action.includes('your-form-id')){          // not connected to Formspree yet
+      e.preventDefault();
+      const d=new FormData(form);
+      const body=`Name: ${d.get('name')||''}%0D%0APhone: ${d.get('phone')||''}%0D%0AEmail: ${d.get('email')||''}%0D%0AEvent date: ${d.get('date')||''}%0D%0AEvent type: ${d.get('type')||''}%0D%0AItems: ${d.get('items')||''}`;
+      document.getElementById('okMsg').style.display='block';
+      window.location.href=`mailto:${CONTACT_EMAIL}?subject=Quote request from ${d.get('name')||'website'}&body=${body}`;
+    }
+    // if connected to Formspree, it submits normally
+  });
+</script>
+</body>
+</html>
